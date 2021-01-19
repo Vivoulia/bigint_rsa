@@ -2,15 +2,34 @@
 #include <string>
 #include "LargeInt.h"
 #include "Rsa.h"
+#include <ctime>
+#include <time.h>
+#include <vector>
+#include <fstream>
+
 
 
 using namespace std;
 
+float benchmark_multiplication(int n);
+float benchmark_addition(int n);
+float benchmark_soustraction(int n);
+float benchmark_div10(int n);
+float benchmark_mod10(int n);
+void save_log(string log);
+
+LargeInt rand617();
+LargeInt rand1000();
 unsigned int nb_bits = 1024;
+
 
 int main()
 {
+    /* initialize random seed: */
+    srand (time(NULL));
 
+
+    benchmark_mod10(2000);
 
    // LargeInt a("4320439259280043854394384724185215749617014043121956053583069354910110521930087897686954214880699127781861079392681714927097809127646849818195762273579332978298089179502487838235347910285752692409785787478420483372749541044551245805611185128588941837082731512683451837605726025272724743514315790484732647013879");
    // LargeInt b("132324761283389341084194002215078975668519400256859157264982040334961059740939613021614698223379747222083756600079268157839569913528455569682736184083845992508723353976741692130256045632959847424355650571301381751510405049722072263914344963486309696781267160573814092959220315966655838299897980514271971826055673");
@@ -26,7 +45,7 @@ int main()
 
 
     LargeInt M("13");
-    LargeInt d("65537");
+    LargeInt d("7");
     LargeInt test = LargeInt::mod_pow(M, d, rsa_param);
     cout << test << endl;
 
@@ -54,3 +73,182 @@ int main()
     return 0;
 
 }
+
+float benchmark_multiplication(int n)
+{
+    save_log("MULT");
+    clock_t temps_initial;
+    clock_t temps_final;
+    vector<float> temps_cpu;
+    float temps_cumule = 0.0;
+
+    for (int i = 0; i < n; i++)
+    {
+        //Generer deux nombres A et B 1024 bits aleatoire
+        LargeInt A = rand617();
+        LargeInt B = rand617();
+        //Start timer
+        temps_initial = clock();
+        //operation a mesurer
+        LargeInt result = A * B;
+        //End timer
+        temps_final = clock ();
+        //sauvegarde temps
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cumule += temps_cpu.at(i);
+        save_log(result.to_str() + "," + A.to_str() + "," + B.to_str());
+    }
+    cout << "[" << n << " Multiplications]" << temps_cumule << " s" << endl;
+    return temps_cumule;
+}
+
+float benchmark_addition(int n)
+{
+    save_log("ADD");
+    clock_t temps_initial;
+    clock_t temps_final;
+    vector<float> temps_cpu;
+    float temps_cumule = 0.0;
+
+    for (int i = 0; i < n; i++)
+    {
+        //Generer deux nombres A et B 1024 bits aleatoire
+        LargeInt A = rand617();
+        LargeInt B = rand617();
+        //Start timer
+        temps_initial = clock();
+        //operation a mesurer
+        LargeInt result = A + B;
+        //End timer
+        temps_final = clock ();
+        //sauvegarde temps
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cumule += temps_cpu.at(i);
+        save_log(result.to_str() + "," + A.to_str() + "," + B.to_str());
+    }
+    cout << "[" << n << " Additions]" << temps_cumule << " s" << endl;
+    return temps_cumule;
+}
+
+float benchmark_soustraction(int n)
+{
+    save_log("SOUS");
+    clock_t temps_initial;
+    clock_t temps_final;
+    vector<float> temps_cpu;
+    float temps_cumule = 0.0;
+
+    for (int i = 0; i < n; i++)
+    {
+        //Generer deux nombres A et B 1024 bits aleatoire
+        LargeInt A = rand617();
+        LargeInt B = rand617();
+        LargeInt biggest;
+        LargeInt lowest;
+        if( A < B )
+        {
+            biggest = B;
+            lowest = A;
+        }
+        else
+        {
+            biggest = A;
+            lowest = B;
+        }
+
+        //Start timer
+        temps_initial = clock();
+        //operation a mesurer
+        LargeInt result = biggest - lowest;
+        //End timer
+        temps_final = clock ();
+        //sauvegarde temps
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cumule += temps_cpu.at(i);
+        save_log(result.to_str() + "," + biggest.to_str() + "," + lowest.to_str());
+    }
+    cout << "[" << n << " Soustractions]" << temps_cumule << " s" << endl;
+    return temps_cumule;
+}
+
+float benchmark_div10(int n)
+{
+    clock_t temps_initial;
+    clock_t temps_final;
+    vector<float> temps_cpu;
+    float temps_cumule = 0.0;
+
+    for (int i = 0; i < n; i++)
+    {
+        //Generer deux nombres A et B 1024 bits aleatoire
+        LargeInt A = rand1000();
+        //Start timer
+        temps_initial = clock();
+        //operation a mesurer
+        LargeInt result = LargeInt::div10(A, 617);
+        //End timer
+        temps_final = clock ();
+        //sauvegarde temps
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cumule += temps_cpu.at(i);
+    }
+    cout << "[" << n << " div10]" << temps_cumule << " s" << endl;
+    return temps_cumule;
+}
+
+float benchmark_mod10(int n)
+{
+    clock_t temps_initial;
+    clock_t temps_final;
+    vector<float> temps_cpu;
+    float temps_cumule = 0.0;
+
+    for (int i = 0; i < n; i++)
+    {
+        //Generer deux nombres A et B 1024 bits aleatoire
+        LargeInt A = rand1000();
+        //Start timer
+        temps_initial = clock();
+        //operation a mesurer
+        LargeInt result = LargeInt::mod10(A, 617);
+        //End timer
+        temps_final = clock ();
+        //sauvegarde temps
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cumule += temps_cpu.at(i);
+    }
+    cout << "[" << n << " div10]" << temps_cumule << " s" << endl;
+    return temps_cumule;
+}
+
+void save_log(string log)
+{
+    ofstream log_file("log.txt", ios::app);
+    if(log_file)
+    {
+        log_file << log << endl;
+        log_file.close();
+    }
+
+}
+
+LargeInt rand617()
+{
+    string chaine = "";
+    for(int i = 0; i < 617; i++)
+    {
+        chaine += to_string(rand() % 10);
+    }
+    return LargeInt(chaine);
+}
+
+LargeInt rand1000()
+{
+    string chaine = "";
+    for(int i = 0; i < 1000; i++)
+    {
+        chaine += to_string(rand() % 10);
+    }
+    return LargeInt(chaine);
+}
+
