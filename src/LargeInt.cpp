@@ -261,9 +261,9 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
 
                     bool overflow = true;
                     unsigned long long int* result_carry = new unsigned long long int[a.getSize() + b.getSize()];
-                    for (int i = 0; i < a.getSize() + b.getSize(); i++)
+                    for (int k = i+j+1; k < a.getSize() + b.getSize(); k++)
                     {
-                        result_carry[i] = result.m_value_vectorized.at(i);
+                        result_carry[k] = result.m_value_vectorized.at(k);
                     }
                     int shift = 0;
                     result_carry[i+j+1] = temp_a;
@@ -282,9 +282,9 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
                         }
                         shift++;
                     }
-                    for (int i = 0; i < a.getSize() + b.getSize(); i++)
+                    for (int k = i+j+1; k < a.getSize() + b.getSize(); k++)
                     {
-                        result.m_value_vectorized.at(i) = result_carry[i];
+                        result.m_value_vectorized.at(k) = result_carry[k];
 
                     }
                     delete[] result_carry;
@@ -301,9 +301,9 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
                 {
                     bool overflow = true;
                     unsigned long long int* result_carry = new unsigned long long int[a.getSize() + b.getSize()];
-                    for (int i = 0; i < a.getSize() + b.getSize(); i++)
+                    for (int k = i+j; k < a.getSize() + b.getSize(); k++)
                     {
-                        result_carry[i] = result.m_value_vectorized.at(i);
+                        result_carry[k] = result.m_value_vectorized.at(k);
                     }
                     int shift = 0;
                     result_carry[i+j] = temp_b;
@@ -322,9 +322,9 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
                         }
                         shift++;
                     }
-                    for (int i = 0; i < a.getSize() + b.getSize(); i++)
+                    for (int k = i+j; k < a.getSize() + b.getSize(); k++)
                     {
-                        result.m_value_vectorized.at(i) = result_carry[i];
+                        result.m_value_vectorized.at(k) = result_carry[k];
                     }
                     delete[] result_carry;
                 }
@@ -346,6 +346,7 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
     result.reformat();
     return result;
 }
+
 
 LargeInt operator/(const LargeInt& a, const LargeInt& b)
 {

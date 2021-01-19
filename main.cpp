@@ -74,7 +74,7 @@ float benchmark_multiplication(int n)
         //End timer
         temps_final = clock ();
         //sauvegarde temps
-        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-3);
         temps_cumule += temps_cpu.at(i);
         save_log(result.to_str() + "," + A.to_str() + "," + B.to_str());
     }
@@ -102,7 +102,7 @@ float benchmark_addition(int n)
         //End timer
         temps_final = clock ();
         //sauvegarde temps
-        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-3);
         temps_cumule += temps_cpu.at(i);
         save_log(result.to_str() + "," + A.to_str() + "," + B.to_str());
     }
@@ -143,7 +143,7 @@ float benchmark_soustraction(int n)
         //End timer
         temps_final = clock ();
         //sauvegarde temps
-        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-3);
         temps_cumule += temps_cpu.at(i);
         save_log(result.to_str() + "," + biggest.to_str() + "," + lowest.to_str());
     }
@@ -169,7 +169,7 @@ float benchmark_div10(int n)
         //End timer
         temps_final = clock ();
         //sauvegarde temps
-        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-3);
         temps_cumule += temps_cpu.at(i);
     }
     cout << "[" << n << " div10]" << temps_cumule << " s" << endl;
@@ -194,7 +194,7 @@ float benchmark_mod10(int n)
         //End timer
         temps_final = clock ();
         //sauvegarde temps
-        temps_cpu.push_back((temps_final - temps_initial)* 1e-6);
+        temps_cpu.push_back((temps_final - temps_initial)* 1e-3);
         temps_cumule += temps_cpu.at(i);
     }
     cout << "[" << n << " mod10]" << temps_cumule << " s" << endl;
