@@ -30,14 +30,18 @@ int main()
     srand (time(NULL));
 
 
-    //benchmark_multiplication(1000);
+    //perform_benchmark(2000);
+    benchmark_multiplication(2000);
 
+
+/*
     Rsa rsa_param = Rsa("key1.txt");
     LargeInt M("13");
-    LargeInt d("65537");
+    LargeInt d("4000");
     LargeInt test = LargeInt::mod_pow(M, d, rsa_param);
     cout << test << endl;
 
+*/
     return 0;
 }
 

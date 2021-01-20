@@ -133,7 +133,7 @@ static LargeInt minimum(const LargeInt& a, const LargeInt& b)
 
 LargeInt& LargeInt::operator=(const LargeInt& a)
 {
-    m_value_vectorized.erase(m_value_vectorized.begin(), m_value_vectorized.end());
+    m_value_vectorized.clear();
     for (std::vector<unsigned long int>::const_iterator it = a.m_value_vectorized.begin() ; it != a.m_value_vectorized.end(); ++it)
     {
         m_value_vectorized.push_back(*it);
@@ -282,7 +282,7 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
                         }
                         shift++;
                     }
-                    for (int k = i+j+1; k < a.getSize() + b.getSize(); k++)
+                    for (int k = i+j+1; k < i+j+2+shift; k++)
                     {
                         result.m_value_vectorized.at(k) = result_carry[k];
 
@@ -322,7 +322,7 @@ LargeInt operator*(const LargeInt& a, const LargeInt& b)
                         }
                         shift++;
                     }
-                    for (int k = i+j; k < a.getSize() + b.getSize(); k++)
+                    for (int k = i+j; k < i+j+1+shift; k++)
                     {
                         result.m_value_vectorized.at(k) = result_carry[k];
                     }
@@ -368,12 +368,9 @@ LargeInt operator/(const LargeInt& a, const LargeInt& b)
 LargeInt LargeInt::mult_modular(const LargeInt& A, const LargeInt& B, const LargeInt& N)
 {
     LargeInt result = A*B;
-    long int i = 0;
     while(result >= N)
     {
         result = result - N;
-        //std::cout << result << " = " << temp << " - " << N  << std::endl;
-        i++;
     }
     return result;
 }
@@ -459,44 +456,9 @@ LargeInt LargeInt::mod_pow(const LargeInt& a, const LargeInt& d, Rsa& rsa_param)
     LargeInt i("1");
     while (i != d)
     {
-        /*
-
-        if( i == LargeInt("43"))
-        {
-            P = P * rsa_param.r_mod_n;
-            std::cout << "P: " << P << std::endl;
-            //debug
-            LargeInt s = P * a;
-            std::cout << "s: " << s << std::endl;
-            LargeInt temp = s * rsa_param.v;
-            LargeInt t = LargeInt::mod10(temp, rsa_param.k);
-            std::cout << "t: " << t << std::endl;
-            temp = t*rsa_param.n;
-            std::cout << "temp: " << temp << std::endl;
-            LargeInt m = s + temp;
-            std::cout << "m: " << m << std::endl;
-            //TODO: Division ...
-            LargeInt u = LargeInt::div10(m, rsa_param.k);
-            std::cout << "u: " << u << std::endl;
-            if(u >= rsa_param.n)
-            {
-                u = u-rsa_param.n;
-                P = u;
-            }
-            else
-            {
-                P = u;
-            }
-            i = i + LargeInt("1");
-        }
-        else
-        {*/
-            P = P * rsa_param.r_mod_n;
-            P = LargeInt::montgomery_modular(P, a, rsa_param);
-            i = i + LargeInt("1");
-            //std::cout << P << std::endl;
-      // }
-
+        P = P * rsa_param.r_mod_n;
+        P = LargeInt::montgomery_modular(P, a, rsa_param);
+        i = i + LargeInt("1");
     }
     return P;
 }
