@@ -31,17 +31,16 @@ int main()
 
 
     //perform_benchmark(2000);
-    benchmark_multiplication(2000);
 
 
-/*
     Rsa rsa_param = Rsa("key1.txt");
-    LargeInt M("13");
-    LargeInt d("4000");
-    LargeInt test = LargeInt::mod_pow(M, d, rsa_param);
-    cout << test << endl;
+    LargeInt M("789465789546512320123");
+    LargeInt cypher = rsa_param.chiffre(M);
+    LargeInt plain = rsa_param.dechiffre(cypher);
+    cout << "Message: " << M << endl;
+    cout << "Cypher : " << cypher << endl;
+    cout << "Plain : " << plain << endl;
 
-*/
     return 0;
 }
 

@@ -3,6 +3,7 @@
 
 #include "LargeInt.h"
 #include <string>
+#include <bitset>
 
 class Rsa
 {
@@ -20,11 +21,18 @@ class Rsa
         LargeInt v;
         LargeInt d;
         LargeInt r_mod_n;
+        LargeInt r2modn;
         int k = 617;
-        int e = 7;
+        int e = 65537;
 
-        LargeInt chiffre(int m);
-        int dechiffre(LargeInt& c);
+
+        int k_bit = 2047;
+        std::bitset<2047> d_bit;
+
+        std::bitset<17> e_bit;
+
+        LargeInt chiffre(const LargeInt& M);
+        LargeInt dechiffre(const LargeInt& C);
 
     protected:
 

@@ -57,9 +57,11 @@ class LargeInt
         static LargeInt add_modular(const LargeInt& a, const LargeInt& b, const LargeInt& n);
         static LargeInt mult_modular(const LargeInt& a, const LargeInt& b, const LargeInt& n);
         static LargeInt montgomery_modular(const LargeInt& a, const LargeInt& b, const Rsa& rsa_param);
+        static LargeInt montgomery_modular_operator(const LargeInt& a, const LargeInt& b, const Rsa& rsa_param);
         static LargeInt div10(const LargeInt& a, int k);
         static LargeInt mod10(const LargeInt& a, int k);
         static LargeInt mod_pow(const LargeInt& a, const LargeInt& d, Rsa& rsa_param);
+        static LargeInt mod_pow2(const LargeInt& a, Rsa& rsa_param);
         virtual ~LargeInt();
 
         //Valeur max pour un unsigned long int: 4 294 967 295

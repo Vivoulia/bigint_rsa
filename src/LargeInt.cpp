@@ -212,7 +212,7 @@ LargeInt operator-(const LargeInt& a, const LargeInt& b)
         {
             //On soustrait un chunk plus grand a un chunk plus petit (a[i] < b[i])
             //Si il reste une dizaine supérieur
-            if(i < a.getSize() - 1 && result.m_value_vectorized.at(i+1) != 0)
+            if(i < a.getSize() - 1)
             {
                 result.m_value_vectorized.at(i) = LargeInt::PRIMITIVE_POW_TEN - (b.m_value_vectorized.at(i) -  a.m_value_vectorized.at(i)) - carry;
                 carry = 1;
@@ -224,11 +224,11 @@ LargeInt operator-(const LargeInt& a, const LargeInt& b)
         }
         else
         {
-            //On calcul le resultat de la soustract /*ion dans une variable de taille 32 bits
+            //On calcul le resultat de la soustraction dans une variable de taille 32 bits
             result.m_value_vectorized.at(i) = a.m_value_vectorized.at(i) - b.m_value_vectorized.at(i) - carry;
             carry = 0;
         }
-        //std::cout << a.m_value_vectorized.at(i) << " - " << b.m_value_vectorized.at(i) << " - " << carry << " = " << result.m_value[i] << std::endl;
+
     }
     result.m_value_vectorized.at(a.getSize()-1) = result.m_value_vectorized.at(a.getSize()-1) - carry;
 
@@ -381,6 +381,16 @@ LargeInt LargeInt::mult_modular(const LargeInt& A, const LargeInt& B, const Larg
 */
 LargeInt LargeInt::montgomery_modular(const LargeInt& a, const LargeInt& b, const Rsa& rsa_param)
 {
+    LargeInt A = LargeInt::montgomery_modular_operator(a, rsa_param.r2modn, rsa_param);
+    LargeInt B = LargeInt::montgomery_modular_operator(b, rsa_param.r2modn, rsa_param);
+    LargeInt C = LargeInt::montgomery_modular_operator(A, B, rsa_param);
+    LargeInt one("1");
+    LargeInt result = LargeInt::montgomery_modular_operator(C, one, rsa_param);
+    return result;
+}
+
+LargeInt LargeInt::montgomery_modular_operator(const LargeInt& a, const LargeInt& b, const Rsa& rsa_param)
+{
     LargeInt s = a * b;
     //std::cout << "s: " << s << std::endl;
     LargeInt temp = s * rsa_param.v;
@@ -399,6 +409,7 @@ LargeInt LargeInt::montgomery_modular(const LargeInt& a, const LargeInt& b, cons
         return u;
     }
 }
+
 
 /**
 * Division de a par une puissance de 10 (keep k last digit)
@@ -461,6 +472,27 @@ LargeInt LargeInt::mod_pow(const LargeInt& a, const LargeInt& d, Rsa& rsa_param)
         i = i + LargeInt("1");
     }
     return P;
+}
+
+LargeInt LargeInt::mod_pow2(const LargeInt& a, Rsa& rsa_param)
+{
+    LargeInt A = LargeInt::montgomery_modular_operator(a, rsa_param.r2modn, rsa_param);
+    LargeInt P("76589357365418471634473541044220529418037461887105220292626470396184988240451752769402340388625243480811166834628710552968372719651052333411047648183302021705726479102287368534937237887939766497242518826322159266539964765229384406905274434073328860586011781556159751324717651363731007612294415204338482030146992295639135007341127265029483575110972586648698321296249350526602640006371840995826451046454835532343487123319388599128917323306735881272489552994108461358317985274087337790304690569733035353928984234737793329799798234217931156896208521148231184399800538367614651270857807969081180698306730879157607118700113");
+    int i = rsa_param.k_bit-1;
+    while (i >= 0)
+    {
+        P = LargeInt::montgomery_modular_operator(P, P, rsa_param);
+        if(rsa_param.d_bit[i] == 1)
+        {
+            P = LargeInt::montgomery_modular_operator(P, A, rsa_param);
+        }
+        i = i-1;
+
+    }
+    LargeInt one("1");
+    P = montgomery_modular_operator(P, one, rsa_param);
+    return P;
+
 }
 
  bool LargeInt::operator==(const LargeInt& a) const
